@@ -9,30 +9,44 @@ import './App.css';
 function App() {
   let [listState, setListState] = useState([])
   let [searchState, setSearchState] = useState('')
-  
-const url = "http://52.26.193.201:3000/products/list"
 
-   useEffect(() => {
-     loadData();
-  },[]);
+  const loadData = () => {
+   fetch("http://52.26.193.201:3000/products/list")
+  .then(response => {
+     return response.json()
+   })
+   .then(data => {
+     setListState(data)
+     console.log(data)
+   })
+   
 
-  const loadData = async () => {
-    const response = await fetch(url);
-    const data = await response.json();
-    formatData(data)
-    console.log(data)
   }
+  
+useEffect(() => {
+  loadData();
+},[]);
 
+const handleClick = value => {
+  loadData(value)
+}
 
   return (
     <div className="App">
-      <header className="App-header">
-        <p>
-          {formatData}
-        </p>
-        
-      </header>
+      {listState.length > 0 && (
+        <ul>
+          {listState.map(listState => (
+            <li key={listState.name}>{listState.name}</li>
+          ))}
+          
+    <div onClick={()=> handleClick(listState.name)} key={listState.name}>
+            {listState.name}
     </div>
+        </ul>
+        
+      )}
+    </div>
+
   );
 }
 
